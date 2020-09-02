@@ -3,11 +3,8 @@
 // load modules
 const express = require("express");
 const morgan = require("morgan");
-// const routes = require("./routes");
-
+const routes = require("./routes");
 const { sequelize, models } = require("./db");
-// Get references to our models.
-const { User, Course } = models;
 
 // variable to enable global error logging
 const enableGlobalErrorLogging =
@@ -24,17 +21,6 @@ app.use(express.json());
 
 // TODO setup your api routes here
 
-function asyncHandler(cb) {
-  //ommits the need for multiple try catch blocks in routes
-  return async (req, res, next) => {
-    try {
-      await cb(req, res, next); // so calls the function cb here and then catches in catch, saves writing try catch every time as higlighted below
-    } catch (err) {
-      next(err);
-    }
-  };
-}
-
 // setup a friendly greeting for the root route
 app.get("/", (req, res) => {
   res.json({
@@ -42,53 +28,7 @@ app.get("/", (req, res) => {
   });
 });
 
-//Setup user routes
-//GET /api/users 200 - Returns the currently authenticated user
-app.get("/api/users", (req, res) => {
-  res.status(200).json({
-    message: "users get route 200",
-  });
-});
-
-//POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
-
-app.post("/api/users", async (req, res) => {
-  let user = await User.create(req.body);
-  //NEED TO SET LOCATIOJ ERROR
-  res.status(201).end();
-});
-
-//Setup course routes
-//GET /api/courses 200 - Returns a list of courses (including the user that owns each course)
-app.get("/api/courses", (req, res) => {
-  res.status(200).json({
-    message: "courses get route 200",
-  });
-});
-//GET /api/courses/:id 200 - Returns the course (including the user that owns the course) for the provided course ID
-app.get("/api/courses/:id", (req, res) => {
-  res.status(200).json({
-    message: "courses get id route 200",
-  });
-});
-//POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
-app.post("/api/courses", (req, res) => {
-  res.status(201).json({
-    message: "courses post route 201",
-  });
-});
-//PUT /api/courses/:id 204 - Updates a course and returns no content
-app.put("/api/courses/:id", (req, res) => {
-  res.status(204).json({
-    message: "courses put route 204",
-  });
-});
-//DELETE /api/courses/:id 204 - Deletes a course and returns no content
-app.delete("/api/courses/:id", (req, res) => {
-  res.status(204).json({
-    message: "courses delete route 204",
-  });
-});
+app.use("/api", routes);
 
 // send 404 if no other route matched
 app.use((req, res) => {
