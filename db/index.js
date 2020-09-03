@@ -1,23 +1,21 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
 console.info('Instantiating and configuring the Sequelize object instance...');
 
 /* -- Allows the use of sequelize to make SQL database requests --- */
 const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "fsjstd-restapi.db",
+  dialect: 'sqlite',
+  storage: 'fsjstd-restapi.db',
   // logging: false,
-  
+  define: {
+    timestamps: true,
+  },
+
 });
 
-
-
 const models = {};
-
 
 // Import all of the models.
 fs
@@ -29,10 +27,16 @@ fs
     console.log(models);
   });
 
+// If available, call method to create associations.
+Object.keys(models).forEach((modelName) => {
+  if (models[modelName].associate) {
+    console.info(`Configuring the associations for the ${modelName} model...`);
+    models[modelName].associate(models);
+  }
+});
 
 // db.models.User = require("./models/users.js")(sequelize);
 // db.models.Course = require("./models/courses.js")(sequelize);
-
 
 // const db = {
 //   sequelize,

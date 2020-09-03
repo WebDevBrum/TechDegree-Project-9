@@ -1,5 +1,3 @@
-'use strict';
-
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -26,7 +24,7 @@ module.exports = (sequelize) => {
       password: {
         type: Sequelize.STRING,
         allowNull: false,
-      }
+      },
     },
     { sequelize },
   );
@@ -34,7 +32,7 @@ module.exports = (sequelize) => {
   User.associate = (models) => {
     // TODO Add associations.
     User.hasMany(models.Course, {
-      //as: 'director', // alias
+      as: 'creator', // alias
       foreignKey: {
         fieldName: 'userId',
         allowNull: false,

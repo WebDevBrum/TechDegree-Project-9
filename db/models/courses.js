@@ -1,5 +1,3 @@
-'use strict';
-
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -9,7 +7,7 @@ module.exports = (sequelize) => {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
+        autoIncrement: false,
       },
       title: {
         type: Sequelize.STRING,
@@ -17,7 +15,7 @@ module.exports = (sequelize) => {
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       estimatedTime: {
         type: Sequelize.STRING,
@@ -34,7 +32,7 @@ module.exports = (sequelize) => {
   Course.associate = (models) => {
     // TODO Add associations.
     Course.belongsTo(models.User, {
-      // as: 'director', // alias
+      as: 'creator', // alias
       foreignKey: {
         fieldName: 'userId',
         allowNull: false,
