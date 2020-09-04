@@ -10,7 +10,7 @@ const sequelize = new Sequelize({
   storage: 'fsjstd-restapi.db',
   // logging: false,
   define: {
-    timestamps: true,
+    timestamps: true, // this throws a database error if false in database.js
   },
 
 });
