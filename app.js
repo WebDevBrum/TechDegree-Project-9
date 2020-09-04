@@ -1,4 +1,3 @@
-// load modules
 const express = require('express');
 const morgan = require('morgan');
 const routes = require('./routes');
@@ -14,11 +13,8 @@ const app = express();
 app.use(morgan('dev'));
 
 app.use(express.json());
-// app.use("/api", routes);
 
-// TODO setup your api routes here
-
-// setup a friendly greeting for the root route
+// A friendly greeting for the root route
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the REST API project!',
@@ -27,26 +23,25 @@ app.get('/', (req, res) => {
 
 app.use('/api', routes);
 
-// send 404 if no other route matched
+// Sends 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
     message: 'Route Not Found',
   });
 });
 
-// setup a global error handler
+// Global error handler
 app.use((err, req, res, next) => {
   if (enableGlobalErrorLogging) {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
   }
-
   res.status(err.status || 500).json({
     message: err.message,
     error: {},
   });
 });
 
-// set our port
+// Sets our port
 app.set('port', process.env.PORT || 5000);
 
 // start listening on our port
