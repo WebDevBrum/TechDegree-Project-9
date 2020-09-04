@@ -83,19 +83,53 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course,
 // and returns no content
 router.post('/courses', [
+  check('title')
+    .exists()
+    .withMessage('Please provide a value for "title"'),
+  check('email')
+    .exists()
+    .withMessage('Please provide a value for "description"'),
 
 ], asyncHandler(async (req, res) => {
-  console.log(req.body);
-  const course = await Course.create(req.body);
-  res.location(`/courses/${course.id}`);
-  res.status(201).end();
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    // Use the Array `map()` method to get a list of error messages.
+    const errorMessages = errors.array().map((error) => error.msg);
+
+    // Return the validation errors to the client.
+    res.status(400).json({ errors: errorMessages });
+  } else {
+    console.log(req.body);
+    const course = await Course.create(req.body);
+    res.location(`/courses/${course.id}`);
+    res.status(201).end();
+  }
 }));
 
 // PUT /api/courses/:id 204 - Updates a course and returns no content
-router.put('/courses/:id', asyncHandler(async (req, res) => {
-  const course = await Course.findByPk(req.params.id);
-  await course.update(req.body);
-  res.status(204).end();
+router.put('/courses/:id', [
+  check('title')
+    .exists()
+    .withMessage('Please provide a value for "title"'),
+  check('description')
+    .exists()
+    .withMessage('Please provide a value for "description"'),
+
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    // Use the Array `map()` method to get a list of error messages.
+    const errorMessages = errors.array().map((error) => error.msg);
+
+    // Return the validation errors to the client.
+    res.status(400).json({ errors: errorMessages });
+  } else {
+    const course = await Course.findByPk(req.params.id);
+    await course.update(req.body);
+    res.status(204).end();
+  }
 }));
 
 //  DELETE /api/courses/:id 204 - Deletes a course and returns no content
